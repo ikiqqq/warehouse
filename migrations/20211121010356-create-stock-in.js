@@ -8,14 +8,11 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      admin_id: {
+        type: Sequelize.INTEGER,
+      },
       barang_id: {
         type: Sequelize.INTEGER,
-        references: {
-          model : "barangs",
-          key : "id"
-        },
-        onUpdate : "CASCADE",
-        onDelete : "CASCADE"
       },
       date: {
         type: Sequelize.DATE

@@ -11,6 +11,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      admins.hasMany(models.barangs, { foreignKey: 'admin_id', sourceKey: 'id' })
+      admins.hasMany(models.stock_in, { foreignKey: 'admin_id', sourceKey: 'id' })
+      admins.hasMany(models.stock_out, { foreignKey: 'admin_id', sourceKey: 'id' })
     }
   };
   admins.init({

@@ -9,7 +9,7 @@ router.get("/:id", auth, admin.getOneAdmins)
 router.get("/", auth, admin.getAllAdmins)
 router.post("/forgot", admin.forgotPassword);
 router.put("/reset-password/:id/:token", admin.resetPassword);
-router.put("/:id", auth, admin.updateAdmin) 
-router.delete("/:id", auth, admin.deleteOneAdmins)
+router.put("/edit/:id", auth, admin.updateAdmin) 
+router.delete("/delete/:id", auth, admin.deleteOneAdmins)
 
 module.exports = router

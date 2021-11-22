@@ -8,8 +8,11 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      admin_id: {
+        type: Sequelize.INTEGER,
+      },
       code: {
-        type: Sequelize.INTEGER
+        type: Sequelize.STRING
       },
       name: {
         type: Sequelize.STRING
@@ -27,7 +30,13 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       satuan: {
-        type: Sequelize.STRING
+        type: Sequelize.ENUM(
+          'kg', 
+          'pcs',
+          'bks',
+          'dus',
+          'ltr'
+          )
       },
       stock: {
         type: Sequelize.INTEGER
