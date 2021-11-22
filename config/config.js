@@ -16,14 +16,10 @@ module.exports = {
     "dialect": "mysql"
   },
   "production": {
-    "use_env_variable": "DATABASE_URL",
-        "protocol": "postgres",
-        "dialect": "postgres",
-        "dialectOptions": {
-            "ssl": {
-                "rejectUnauthorized": true
-            }
-        }
-    }
+    "username": process.env.DB_HEROKU,
+    "password": process.env.HEROKU_PASSWORD,
+    "database": process.env.HEROKU_DATABASE,
+    "host": process.env.HEROKU_HOST,
+    "dialect": "postgres"
+  }
 }
-
