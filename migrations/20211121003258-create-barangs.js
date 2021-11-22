@@ -34,11 +34,13 @@ module.exports = {
           'kg', 
           'pcs',
           'bks',
-          'dus',
-          'ltr'
+          'dus'
           )
       },
       stock: {
+        type: Sequelize.INTEGER
+      },
+      stock_awal: {
         type: Sequelize.INTEGER
       },
       createdAt: {

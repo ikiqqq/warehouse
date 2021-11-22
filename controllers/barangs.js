@@ -1,6 +1,5 @@
-const {barangs, admins} = require("../models");
+const { barangs, admins} = require("../models");
 const Joi = require("joi");
-const { Op } = require("sequelize");
 
 module.exports = {
     createBarang: async (req, res) => {
@@ -43,17 +42,17 @@ module.exports = {
 
             const checkCode = await barangs.findOne({
                 where: {
-                  code: body.code,
+                    code: body.code,
                 },
-              });
-        
-              if (checkCode) {
+            });
+
+            if (checkCode) {
                 return res.status(400).json({
-                  status: "failed",
-                  message: "Code already used, please use another code",
-                  data: null,
+                    status: "failed",
+                    message: "Code already used, please use another code",
+                    data: null,
                 });
-              }
+            }
 
             const item = await barangs.create({
                 admin_id: body.admin_id,
@@ -90,16 +89,16 @@ module.exports = {
     getBarang: async (req, res) => {
         try {
             const item = await barangs.findAll({
-                order : [["createdAt", "DESC"]],
+                order: [["createdAt", "DESC"]],
                 include: [
                     {
-                      model: admins,
-                      as: "admins",
-                      attributes: {
-                        exclude: ["password", "email", "full_name", "createdAt", "updatedAt"],
-                      },
+                        model: admins,
+                        as: "admins",
+                        attributes: {
+                            exclude: ["password", "email", "full_name", "createdAt", "updatedAt"],
+                        },
                     },
-                  ],
+                ],
             });
 
             if (!item.length) {
@@ -123,44 +122,37 @@ module.exports = {
         }
     },
 
-    getAllBarangsByCategory : async (req, res) => {
+    /*getAllBarangsByCategory: async (req, res) => {
         const category = req.params.category
         try {
-            const dataBarang = await barangs.findOne({
-                where : { category : category.toLowerCase() } ,
-                attributes : {exclude : ["createdAt", "updatedAt"]},
-                include : [{
-                    model : admins,
-                    as : "admins",
-                    attributes : {exclude : ["password", "email", "full_name", "createdAt", "updatedAt"]}
+            const dataBarang = await barangs.findAll({
+                where: { category: category.toLowerCase() },
+                include: [{
+                    model: admins,
+                    as: "admins",
+                    attributes: { exclude: ["password", "email", "full_name", "createdAt", "updatedAt"] }
                 }],
-            }); 
-            
-            if(!dataBarang) {
+            });
+
+            if (!dataBarang) {
                 return res.status(400).json({
-                    status : "failed",
-                    message : "Data not found"
+                    status: "failed",
+                    message: "Data not found"
                 });
             }
 
-            const count = await barangs.count({ distinct: true });
-            let next = page + 1;
-            if (page * limit >= count) {
-                next = 0;
-            }
-
             return res.status(200).json({
-                status : "success",
-                message : "Succesfully retrieved All data Movies",
-                data: dataBarang,
-            });
-        } catch (error) {
-            return res.status(500).json({
-                status : "failed",
-                message : "Internal Server Error"
-            })
-        }
-    },
+                status: "success",
+                message: "Succesfully retrieved data Admins",
+                data: adminsData
+              });
+            } catch (error) {
+              return res.status(500).json({
+                status: "failed",
+                message: "Internal Server Error"
+              })
+            }
+    },*/
 
     updateBarang: async (req, res) => {
         const id = req.params.id
@@ -174,8 +166,8 @@ module.exports = {
                 brand: Joi.string(),
                 size: Joi.number(),
                 price: Joi.number(),
-
-                satuan: Joi.string()
+                satuan: Joi.string(),
+                stock: Joi.number()
             });
 
             const { error } = schema.validate({
@@ -187,6 +179,7 @@ module.exports = {
                 size: body.size,
                 price: body.price,
                 satuan: body.satuan,
+                stock: body.stock
             }, { abortEarly: false });
 
             if (error) {
@@ -198,13 +191,13 @@ module.exports = {
                 });
             };
 
-            if(body.code) {
-                const checkCode = await barangs.findOne({where : {code : body.code}})
-                if(checkCode) {
-                        return res.status(400).json({
-                            status : "failed",
-                            message : "Code of item can not duplicate"
-                        });
+            if (body.code) {
+                const checkCode = await barangs.findOne({ where: { code: body.code } })
+                if (checkCode) {
+                    return res.status(400).json({
+                        status: "failed",
+                        message: "Code of item can not duplicate"
+                    });
                 }
             }
 
@@ -217,8 +210,9 @@ module.exports = {
                 size: body.size,
                 price: body.price,
                 satuan: body.satuan,
+                stock: body.stock
             }, {
-                where: {id}
+                where: { id }
             });
 
             if (!updateItem[0]) {
@@ -230,7 +224,7 @@ module.exports = {
             };
 
             const data = await barangs.findOne({
-                where: {id}
+                where: { id }
             });
 
             return res.status(200).json({

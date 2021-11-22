@@ -1,26 +1,29 @@
-const { barangs, stock_in, stock_out } = require("../models");
+const { barangs, stock_in} = require("../models");
 const Joi = require("joi");
-const { Op } = require("sequelize");
 
 module.exports = {
-    postAddIncome: async (req, res) => {
-        const admin = req.admin;
-        const body = req.body;
+    stockIn: async(req, res) => {
+        const id = req.params.id
+        const body = req.body
         try {
             const schema = Joi.object({
                 admin_id: Joi.number().required(),
                 barang_id: Joi.number().required(),
+                stockOut_id: Joi.number().required(),
                 date: Joi.date().required(),
+                name: Joi.string().required(),
                 jumlah: Joi.number().required(),
                 penerima: Joi.string().required(),
-                keterangan: Joi.string().required(),
+                keterangan: Joi.string()
             });
 
             const { error } = schema.validate(
                 {
-                    admin_id: admin.id,
+                    admin_id: body.admin_id,
                     barang_id: body.barang_id,
+                    stockOut_id: body.stockOut_id,
                     date: body.date,
+                    name: body.name,
                     jumlah: body.jumlah,
                     penerima: body.penerima,
                     keterangan: body.keterangan,
@@ -35,116 +38,85 @@ module.exports = {
                     errors: error["details"][0]["message"],
                 });
             }
-
-            const safe = await barangs.findOne({
+            const barang = await barangs.findOne({
                 where: {
-                    id: body.barang_id,
-                    admin_id: admin.id,
-                },
-            });
-
-            if (!safe) {
-                return res.status(404).json({
+                    id: id
+                }
+            })
+            if (!barang) {
+                return res.status(400).json({
                     status: "failed",
-                    message: "Safe not found",
-                    data: null,
-                });
+                    message: "item cannot found"
+                })
             }
 
-            const create = await stock_in.create({
-                admin_id: admin.id,
-                barang_id: body.barang_id,
-                stockIn_id: body.stockIn_id,
+            const createStockIn = await stock_in.create({
+                admin_id: body.admin_id,
+                barang_id: id,
+                stockOut_id: body.stockOut_id,
                 date: body.date,
+                name: body.name,
                 jumlah: body.jumlah,
                 penerima: body.penerima,
                 keterangan: body.keterangan,
-                stock: safe.dataValues.stock + body.jumlah,
-                type: "addItem",
-            });
-
-            if (!create) {
+            })
+            if (!createStockIn) {
                 return res.status(400).json({
                     status: "failed",
-                    message: "Unable to save add income to database",
+                    message: "Unable to save data to database",
                     data: null,
-                });
+                })
             }
 
-            //hitung all expense type
-            const stock = await stock_in.findAll({
-                where: {
-                    admin_id: admin.id,
-                    barang_id: body.barang_id,
-                    type: "expense",
-                },
-            });
+            const allStock = barang.stock + body.jumlah
 
-            let allExpenses = stock.map((e) => {
-                return e.dataValues.stock;
-            });
-
-            let sumstock;
-            if (allstocks.length == 0) sumstock = 0;
-            if (allstocks.length == 1) sumstock = allstocks[0];
-            if (allstocks.length > 1)
-                sumstock = allstocks.reduce((a, b) => a + b);
-
-            //to count all transaction type addIncome -> hitung addIncome
-            const addItem = await stock_in.findAll({
-                where: {
-                    admin_id: admin.id,
-                    safe_id: body.safe_id,
-                    type: "addItem",
-                },
-            });
-
-            const allAddItems = addItem.map((e) => {
-                return e.dataValues.stock;
-            });
-
-            let sumItem;
-            if (allAddItems.length == 1) sumItem = allAddItems[0];
-            if (allAddItems.length > 1)
-                sumItem = allAddItems.reduce((a, b) => a + b);
-
-            //hitung stock baru
-            const newSafe = safe.openingBalance + sumItem - sumExpense;
-
-            //update stock
-            const updateSafe = await barangs.update(
+            const updateStock = await barangs.update(
                 {
-                    amount: newSafe,
-                },
-                {
-                    where: {
-                        id: body.safe_id,
-                        admin_id: admin.id,
-                    },
+                stock: allStock
+            }, {
+                where: {
+                    id
                 }
-            );
-
-            const data = await stock_in.findOne({
-                where: {
-                    id: create.dataValues.id,
-                    admin_id: admin.id,
-                },
-                include: [
-                    {
-                        model: Safes,
-                    },
-                ],
-            });
+            })
 
             return res.status(200).json({
                 status: "success",
-                message: "Successfully saved add income to database",
-                data: { data },
+                message: "Successfully saved Stock In to database",
+                data: createStockIn,
             });
+
         } catch (error) {
+            console.log(error)
             return res.status(500).json({
                 status: "failed",
                 message: "Internal server error",
+                data: null,
+            });
+        }
+    },
+    
+    getStockIn: async (req, res) => {
+        try {
+            const item = await stock_in.findAll({
+                order: [["createdAt", "DESC"]]
+            });
+
+            if (!item.length) {
+                return res.status(400).json({
+                    status: "failed",
+                    message: "There's no item in database!",
+                    data: null,
+                });
+            } else {
+                return res.status(200).json({
+                    success: { message: "This is the list of items" },
+                    data: item,
+                });
+            }
+        } catch (error) {
+            return res.status(500).json({
+                status: "failed",
+                message: error.message || "Internal Server Error",
                 data: null,
             });
         }

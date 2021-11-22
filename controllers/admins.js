@@ -3,9 +3,9 @@ require("dotenv").config();
 const { admins } = require('../models')
 const jwt = require('../helpers/jwt')
 const { encrypt, checkPass } = require("../helpers/bcrypt");
-const hbs = require("nodemailer-express-handlebars");
-const nodemailer = require("nodemailer");
-const path = require("path");
+// const hbs = require("nodemailer-express-handlebars");
+// const nodemailer = require("nodemailer");
+// const path = require("path");
 
 module.exports = {
   register: async (req, res) => {
@@ -152,7 +152,7 @@ module.exports = {
     }
   },
 
-  forgotPassword: async (req, res) => {
+  /*forgotPassword: async (req, res) => {
     const body = req.body;
     try {
       const admin = await admins.findOne({
@@ -299,7 +299,7 @@ module.exports = {
         message: "Internal Server Error"
       })
     }
-  },
+  },*/
 
   //Retriere data admin by id
   getOneAdmins: async (req, res) => {

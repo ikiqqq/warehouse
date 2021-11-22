@@ -14,6 +14,9 @@ module.exports = {
       barang_id: {
         type: Sequelize.INTEGER,
       },
+      stockOut_id: {
+        type: Sequelize.INTEGER,
+      },
       date: {
         type: Sequelize.DATE
       },
