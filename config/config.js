@@ -2,10 +2,10 @@ require('dotenv').config();
 
 module.exports = {
   "development": {
-    "username": process.env.DB_USER,
-    "password": process.env.DB_PASS,
-    "database": process.env.DB_DATABASE,
-    "host": "127.0.0.1",
+    "username": process.env.DB_HEROKU,
+    "password": process.env.HEROKU_PASSWORD,
+    "database": process.env.HEROKU_DATABASE,
+    "host": process.env.HEROKU_HOST,
     "dialect": "postgres"
   },
   "test": {
@@ -16,10 +16,13 @@ module.exports = {
     "dialect": "mysql"
   },
   "production": {
-    "username": process.env.DB_HEROKU,
-    "password": process.env.HEROKU_PASSWORD,
-    "database": process.env.HEROKU_DATABASE,
-    "host": process.env.HEROKU_HOST,
-    "dialect": "postgres"
+    "use_env_variable": "DATABASE_URL",
+        "protocol": "postgres",
+        "dialect": "postgres",
+        "dialectOptions": {
+            "ssl": {
+                "rejectUnauthorized": false
+            }
+        }
   }
 }
