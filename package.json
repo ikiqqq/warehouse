@@ -18,10 +18,11 @@
     "pg": "^8.7.1",
     "pg-hstore": "^2.3.4",
     "scan-env": "^1.0.3",
-    "sequelize": "^6.9.0",
+    "sequelize": "^6.11.0",
     "sequelize-cli": "^6.3.0"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "noop2": "^2.0.0"
   },
   "scripts": {
