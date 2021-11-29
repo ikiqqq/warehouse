@@ -40,9 +40,6 @@ module.exports = {
       stock: {
         type: Sequelize.INTEGER
       },
-      stock_awal: {
-        type: Sequelize.INTEGER
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

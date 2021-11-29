@@ -6,7 +6,10 @@ module.exports = {
     "password": process.env.HEROKU_PASSWORD,
     "database": process.env.HEROKU_DATABASE,
     "host": process.env.HEROKU_HOST,
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "dialectOptions": {
+            "ssl": { "rejectUnauthorized": false }
+        }
   },
   "test": {
     "username": "root",
